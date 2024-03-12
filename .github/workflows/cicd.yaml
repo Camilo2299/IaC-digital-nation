@@ -1,0 +1,31 @@
+name: Despliegue API Go en GKE
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  compilar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Compilar API Go
+        run: go build -o app/main.go
+
+      - name: Construir imagen Docker
+        run: docker build -t app/dockerfile .
+
+      - name: Subir imagen a Artifact Registry
+        run: docker push https://us-central1-go.pkg.dev/endless-gamma-415720/digiltal-nation
+
+  desplegar:
+    needs: compilar
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Desplegar API en GKE
+        run: kubectl apply -f deployment.yaml -n digital-nation
+

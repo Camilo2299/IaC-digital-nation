@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ms-adapter-transfer-user
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: ms-adapter-transfer-user
+  template:
+    metadata:
+      labels:
+        app: ms-adapter-transfer-user
+    spec:
+      containers:
+      - name: digital-nation
+        image: https://us-central1-go.pkg.dev/endless-gamma-415720/digiltal-nation/ms-adapter-transfer-user:latest
+        ports:
+        - containerPort: 80
