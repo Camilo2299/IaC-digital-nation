@@ -4,28 +4,34 @@ on:
   push:
     branches:
       - main
+env:
+    PROJECT_ID: digital-nation
+    IMAGE_NAME: ms-adapter-transfer-user
+    REGION: us-central1
+      
 
 jobs:
-  compilar:
+  build-and-push:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
-      - name: Compilar API Go
-        run: go build -o ./ms-adapter-transfer-user/app/main.go
+    - name: Docker Build
+      run: docker build . -t gcr.io/${{ env.PROJECT_ID }}/${{ env.IMAGE_NAME }}:latest
 
-      - name: Construir imagen Docker
-        run: docker build -t ./ms-adapter-transfer-user/app/dockerfile .
+    - name: Authenticate to Google Cloud
+      uses: 'google-github-actions/auth@v0.6.0'
+      with:
+        credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+        token_format: 'access_token'
 
-      - name: Subir imagen a Artifact Registry
-        run: docker push https://us-central1-go.pkg.dev/endless-gamma-415720/digiltal-nation
+    - name: Docker Push
+      run: docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.IMAGE_NAME }}:latest
 
-  desplegar:
-    needs: compilar
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Desplegar API en GKE
-        run: kubectl apply -f ./ms-adapter-transfer-user/deployment/deployment.yaml -n digital-nation
+    - name: Artifact Registry Import
+      run: |
+        gcloud artifacts repositories docker import \
+          gcr.io/${{ env.PROJECT_ID }}/${{ env.IMAGE_NAME }}:latest \
+          --repository=${{ env.IMAGE_NAME }} \
+          --location=${{ env.REGION }}
 
