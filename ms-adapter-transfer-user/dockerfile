@@ -3,6 +3,6 @@ WORKDIR /app
 #COPY go.mod ./
 #RUN go mod download
 COPY *.go ./
-RUN ls
+RUN echo "Mostrando archivos en /app:" && ls -la /data
 RUN go build main.go
 CMD ["./main.go"]
