@@ -25,11 +25,18 @@ jobs:
         credentials_json: ${{ secrets.GCP_CREDENTIALS }}
         token_format: 'access_token'
     
+    - name: Configure Docker Client
+      run: |-
+        gcloud auth configure-docker --quiet
+        gcloud auth configure-docker us-central1-docker.pkg.dev
+    
     - name: Docker Build
-      run: docker build -t us-central1-go.pkg.dev/endless-gamma-415720/digiltal-nation${{ env.PROJECT_ID }}/${{ env.IMAGE_NAME }}:latest .
+      run: docker build -t ${{ env.IMAGE_NAME }}:latest .
 
-    - name: Docker Push
-      run: docker push us-central1-go.pkg.dev/endless-gamma-415720/digiltal-nation/${{ env.PROJECT_ID }}/${{ env.IMAGE_NAME }}:latest
+    - name: Push Docker Image to Artifact Registry
+      run: |-
+        docker tag ${{ env.IMAGE_NAME }}:latest us-central1-docker.pkg.dev/endless-gamma-415720/digital-nation-docker/${{ env.IMAGE_NAME }}:latest
+        docker push us-central1-docker.pkg.dev/endless-gamma-415720/digital-nation-docker${{ env.IMAGE_NAME }}:latest
 
     - name: Artifact Registry Import
       run: |
