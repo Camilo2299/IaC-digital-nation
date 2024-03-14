@@ -1,5 +1,5 @@
 FROM golang:1.22.0-alpine
-WORKDIR /app
+WORKDIR /
 COPY *.mod ./
 COPY *.go ./
 #RUN go mod download
