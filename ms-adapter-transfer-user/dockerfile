@@ -3,6 +3,6 @@ WORKDIR /
 COPY *.mod ./
 COPY *.go ./
 #RUN go mod download
-RUN echo "Mostrando archivos en /app:" && ls -la /app
+#RUN echo "Mostrando archivos en /app:" && ls -la /app
 RUN go build -o /ms-adapter-tranfer-user
 CMD ["/ms-adapter-tranfer-user"]
