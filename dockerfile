@@ -1,7 +1,7 @@
 FROM golang:1.22
 WORKDIR /app
-COPY ./ms-adapter-tranfer-user/app/go.mod .
-COPY ./ms-adapter-tranfer-user/app/main.go .
+COPY /app/go.mod .
+COPY /app/main.go .
 #RUN go mod download
 #RUN echo "Mostrando archivos en /app:" && ls -la /app
 RUN go build -o ms-adapter-tranfer-user .
