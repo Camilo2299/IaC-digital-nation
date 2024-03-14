@@ -16,8 +16,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Docker Build
-      run: docker build ./
+
 
 
     - name: Authenticate to Google Cloud
@@ -25,9 +24,12 @@ jobs:
       with:
         credentials_json: ${{ secrets.GCP_CREDENTIALS }}
         token_format: 'access_token'
+    
+    - name: Docker Build
+      run: docker build -t us-central1-go.pkg.dev/endless-gamma-415720/digiltal-nation${{ env.PROJECT_ID }}/${{ env.IMAGE_NAME }}:latest .
 
     - name: Docker Push
-      run: docker push ${{ env.IMAGE_NAME }}
+      run: docker push us-central1-go.pkg.dev/endless-gamma-415720/digiltal-nation/${{ env.PROJECT_ID }}/${{ env.IMAGE_NAME }}:latest
 
     - name: Artifact Registry Import
       run: |
