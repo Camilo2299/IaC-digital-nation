@@ -1,8 +1,8 @@
-FROM golang:1.22.0-alpine
-#WORKDIR /app
-COPY *.mod ./
-COPY *.go ./
+FROM golang:1.22
+WORKDIR /app
+COPY ms-adapter-tranfer-user/app/go.mod .
+COPY ms-adapter-tranfer-user/app/main.go .
 #RUN go mod download
 #RUN echo "Mostrando archivos en /app:" && ls -la /app
-RUN go build -o /ms-adapter-tranfer-user
-CMD ["/ms-adapter-tranfer-user"]
+RUN go build -o ms-adapter-tranfer-user .
+ENTRYPOINT ["/app/ms-adapter-tranfer-user"]
